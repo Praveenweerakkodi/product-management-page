@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Download } from "lucide-react";
+import { Download, ChevronDown } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { StatsBar } from "@/components/products/StatsBar";
 import { ProductFilters } from "@/components/products/ProductFilters";
@@ -13,7 +13,7 @@ import { EmptyState } from "@/components/products/EmptyState";
 import { SkeletonCard } from "@/components/products/SkeletonCard";
 import { Button } from "@/components/ui/button";
 import { useProducts } from "@/hooks/useProducts";
-import { exportToCSV } from "@/lib/storage";
+import { exportToCSV, exportToPDF } from "@/lib/storage";
 import type { Product } from "@/types/product";
 import type { ProductSchemaType } from "@/lib/validations";
 
@@ -35,6 +35,8 @@ export default function HomePage() {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editProduct, setEditProduct] = useState<Product | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const hasActiveFilters =
     !!filters.search || !!filters.minPrice || !!filters.maxPrice || filters.category !== "all";
@@ -85,18 +87,52 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Export CSV */}
+            {/* Export Menu */}
             {products.length > 0 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => exportToCSV(products)}
-                id="export-csv-btn"
-                className="gap-2 text-xs h-8"
-              >
-                <Download className="w-3.5 h-3.5" />
-                Export CSV
-              </Button>
+              <div className="relative">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setExportMenuOpen(!exportMenuOpen)}
+                  id="export-btn"
+                  className="gap-2 text-xs h-8"
+                  disabled={isExporting}
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  Export
+                  <ChevronDown className="w-3.5 h-3.5" />
+                </Button>
+
+                {/* Dropdown menu */}
+                {exportMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-card border rounded-lg shadow-lg z-50">
+                    <button
+                      onClick={async () => {
+                        setIsExporting(true);
+                        exportToCSV(products);
+                        setExportMenuOpen(false);
+                        setIsExporting(false);
+                      }}
+                      disabled={isExporting}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-muted rounded-t-lg transition-colors disabled:opacity-50"
+                    >
+                      📊 Export as CSV
+                    </button>
+                    <button
+                      onClick={async () => {
+                        setIsExporting(true);
+                        await exportToPDF(products);
+                        setExportMenuOpen(false);
+                        setIsExporting(false);
+                      }}
+                      disabled={isExporting}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-muted rounded-b-lg transition-colors disabled:opacity-50"
+                    >
+                      📄 Export as PDF
+                    </button>
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
