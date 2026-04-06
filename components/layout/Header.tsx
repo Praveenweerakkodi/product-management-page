@@ -13,7 +13,6 @@ export function Header({ onAddProduct }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-40 flex items-center justify-between px-6 py-4 border-b border-border bg-background/80 backdrop-blur-md">
-      {/* Mobile logo */}
       <div className="flex items-center gap-2 lg:hidden">
         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center">
           <Package className="w-4 h-4 text-white" />

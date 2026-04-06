@@ -68,7 +68,7 @@ export function Sidebar() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-medium truncate">Admin User</p>
-            <p className="text-xs text-muted-foreground truncate">admin@producthub.io</p>
+            <p className="text-xs text-muted-foreground truncate">admin@producthub.lk</p>
           </div>
         </div>
       </div>
